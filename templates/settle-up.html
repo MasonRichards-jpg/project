@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PayBack — Settle Up</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">P$</div>
+    <span class="brand-name">PayBack</span>
+  </div>
+  <nav class="sidebar-nav">
+    <span class="nav-label">Menu</span>
+    <a href="/" class="nav-item">
+      <span class="ni">⊞</span> <span>Overview</span>
+    </a>
+    <a href="/expenses" class="nav-item">
+      <span class="ni">◈</span> <span>Expenses</span>
+    </a>
+    <a href="/balances" class="nav-item">
+      <span class="ni">⚖</span> <span>Balances</span>
+    </a>
+    <a href="/settle-up" class="nav-item active">
+      <span class="ni">✓</span> <span>Settle Up</span>
+    </a>
+    <a href="/trip" class="nav-item">
+      <span class="ni">✦</span> <span>Trip</span>
+    </a>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="trip-card">
+      <div class="trip-card-top">
+        <span class="trip-card-label">Active Trip</span>
+        <a href="/trip" class="trip-card-edit">Edit</a>
+      </div>
+      <div class="trip-card-name">{{ trip.cover }} {{ trip.name }}</div>
+      <div class="trip-card-dates">{{ trip.start_date | fmtdate }} — {{ trip.end_date | fmtdate }}</div>
+      <div class="trip-avatars">
+        {% for member in trip.members %}
+        <span class="av sm" style="--color:{{ loop.cycle('#6366f1', '#ec4899', '#14b8a6', '#f59e0b', '#22c55e', '#64748b', '#8b5cf6', '#f97316') }}">{{ member[0] }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 class="page-title">Settle Up</h1>
+      <p class="page-sub">3 payments needed · $342.00 total unsettled</p>
+    </div>
+    <div class="topbar-right">
+      <a href="/settle-up/history" class="btn btn-ghost btn-sm">Payment History</a>
+      <form method="POST" action="/settle-up/mark-all" style="display:inline">
+        <button type="submit" class="btn btn-success btn-sm">Mark All Settled</button>
+      </form>
+    </div>
+  </header>
+
+  <div class="page-body">
+
+    <!-- SUMMARY STATS -->
+    <div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
+      <div class="stat-card">
+        <div class="stat-card-label">Unsettled Debts</div>
+        <div class="stat-card-value col-warning">3</div>
+        <div class="stat-card-sub col-muted">payments needed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Total to Settle</div>
+        <div class="stat-card-value col-danger">$342.00</div>
+        <div class="stat-card-sub col-muted">across 3 debts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Already Settled</div>
+        <div class="stat-card-value col-success">$520.00</div>
+        <div class="stat-card-sub col-muted">2 payments done</div>
+      </div>
+    </div>
+
+    <!-- PENDING DEBTS -->
+    <div>
+      <div class="section-heading">Pending Payments</div>
+      <div style="height:12px"></div>
+      <div class="settle-grid">
+
+        <!-- Debt 1 -->
+        <div class="debt-card">
+          <div class="debt-top">
+            <div class="debt-from">
+              <span class="av lg" style="--color:#ec4899">S</span>
+              <span class="debt-name">Sara</span>
+            </div>
+            <div class="debt-arrow">
+              <div class="debt-arrow-line"></div>
+              <span class="debt-arrow-icon">→</span>
+            </div>
+            <div class="debt-to">
+              <span class="av lg" style="--color:#6366f1">A</span>
+              <span class="debt-name">Alex</span>
+            </div>
+          </div>
+          <div class="debt-amount">$74.00</div>
+          <div class="debt-desc">Sara owes Alex for covered expenses</div>
+          <div style="font-size:11px;color:var(--muted);text-align:center;padding:6px 12px;background:var(--surface2);border-radius:var(--radius-sm)">
+            Dinner at Sarong (+2 more)
+          </div>
+          <div class="debt-actions">
+            <form method="POST" action="/settle-up/remind" style="display:inline">
+              <input type="hidden" name="debtor" value="Sara">
+              <button type="submit" class="btn btn-ghost btn-sm">Remind Sara</button>
+            </form>
+            <form method="POST" action="/settle-up/settle" style="display:inline">
+              <input type="hidden" name="debtor" value="Sara">
+              <input type="hidden" name="creditor" value="Alex">
+              <button type="submit" class="btn btn-success btn-sm">✓ Mark Settled</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Debt 2 -->
+        <div class="debt-card">
+          <div class="debt-top">
+            <div class="debt-from">
+              <span class="av lg" style="--color:#f59e0b">J</span>
+              <span class="debt-name">Jess</span>
+            </div>
+            <div class="debt-arrow">
+              <div class="debt-arrow-line"></div>
+              <span class="debt-arrow-icon">→</span>
+            </div>
+            <div class="debt-to">
+              <span class="av lg" style="--color:#14b8a6">M</span>
+              <span class="debt-name">Mike</span>
+            </div>
+          </div>
+          <div class="debt-amount">$140.00</div>
+          <div class="debt-desc">Jess owes Mike for covered expenses</div>
+          <div style="font-size:11px;color:var(--muted);text-align:center;padding:6px 12px;background:var(--surface2);border-radius:var(--radius-sm)">
+            Villa Ubud — Night 3 (+1 more)
+          </div>
+          <div class="debt-actions">
+            <form method="POST" action="/settle-up/remind" style="display:inline">
+              <input type="hidden" name="debtor" value="Jess">
+              <button type="submit" class="btn btn-ghost btn-sm">Remind Jess</button>
+            </form>
+            <form method="POST" action="/settle-up/settle" style="display:inline">
+              <input type="hidden" name="debtor" value="Jess">
+              <input type="hidden" name="creditor" value="Mike">
+              <button type="submit" class="btn btn-success btn-sm">✓ Mark Settled</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Debt 3 -->
+        <div class="debt-card">
+          <div class="debt-top">
+            <div class="debt-from">
+              <span class="av lg" style="--color:#22c55e">L</span>
+              <span class="debt-name">Leo</span>
+            </div>
+            <div class="debt-arrow">
+              <div class="debt-arrow-line"></div>
+              <span class="debt-arrow-icon">→</span>
+            </div>
+            <div class="debt-to">
+              <span class="av lg" style="--color:#ec4899">S</span>
+              <span class="debt-name">Sara</span>
+            </div>
+          </div>
+          <div class="debt-amount">$128.00</div>
+          <div class="debt-desc">Leo owes Sara for covered expenses</div>
+          <div style="font-size:11px;color:var(--muted);text-align:center;padding:6px 12px;background:var(--surface2);border-radius:var(--radius-sm)">
+            Scooter Rental × 5 (+2 more)
+          </div>
+          <div class="debt-actions">
+            <form method="POST" action="/settle-up/remind" style="display:inline">
+              <input type="hidden" name="debtor" value="Leo">
+              <button type="submit" class="btn btn-ghost btn-sm">Remind Leo</button>
+            </form>
+            <form method="POST" action="/settle-up/settle" style="display:inline">
+              <input type="hidden" name="debtor" value="Leo">
+              <input type="hidden" name="creditor" value="Sara">
+              <button type="submit" class="btn btn-success btn-sm">✓ Mark Settled</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SETTLED DEBTS -->
+    <div>
+      <div class="section-heading" style="color:var(--muted)">Settled Payments</div>
+      <div style="height:12px"></div>
+      <div class="settle-grid settled-section">
+
+        <!-- Settled 1 -->
+        <div class="debt-card" style="position:relative">
+          <span class="settled-badge">✓ Settled</span>
+          <div class="debt-top">
+            <div class="debt-from">
+              <span class="av lg" style="--color:#14b8a6">M</span>
+              <span class="debt-name">Mike</span>
+            </div>
+            <div class="debt-arrow">
+              <div class="debt-arrow-line" style="background:var(--border)"></div>
+              <span class="debt-arrow-icon" style="color:var(--muted)">→</span>
+            </div>
+            <div class="debt-to">
+              <span class="av lg" style="--color:#6366f1">A</span>
+              <span class="debt-name">Alex</span>
+            </div>
+          </div>
+          <div class="debt-amount" style="color:var(--muted)">$280.00</div>
+          <div class="debt-desc">Settled on Jun 16 via bank transfer</div>
+          <div style="font-size:11px;color:var(--muted);text-align:center;padding:6px 12px;background:var(--surface2);border-radius:var(--radius-sm)">
+            Villa Ubud + Scooters
+          </div>
+        </div>
+
+        <!-- Settled 2 -->
+        <div class="debt-card" style="position:relative">
+          <span class="settled-badge">✓ Settled</span>
+          <div class="debt-top">
+            <div class="debt-from">
+              <span class="av lg" style="--color:#6366f1">A</span>
+              <span class="debt-name">Alex</span>
+            </div>
+            <div class="debt-arrow">
+              <div class="debt-arrow-line" style="background:var(--border)"></div>
+              <span class="debt-arrow-icon" style="color:var(--muted)">→</span>
+            </div>
+            <div class="debt-to">
+              <span class="av lg" style="--color:#22c55e">L</span>
+              <span class="debt-name">Leo</span>
+            </div>
+          </div>
+          <div class="debt-amount" style="color:var(--muted)">$240.00</div>
+          <div class="debt-desc">Settled on Jun 14 via cash</div>
+          <div style="font-size:11px;color:var(--muted);text-align:center;padding:6px 12px;background:var(--surface2);border-radius:var(--radius-sm)">
+            Airport taxi + breakfasts
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

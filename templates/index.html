@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PayBack — Overview</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">P$</div>
+    <span class="brand-name">PayBack</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <span class="nav-label">Menu</span>
+    <a href="/" class="nav-item active">
+      <span class="ni">⊞</span> <span>Overview</span>
+    </a>
+    <a href="/expenses" class="nav-item">
+      <span class="ni">◈</span> <span>Expenses</span>
+    </a>
+    <a href="/balances" class="nav-item">
+      <span class="ni">⚖</span> <span>Balances</span>
+    </a>
+    <a href="/settle-up" class="nav-item">
+      <span class="ni">✓</span> <span>Settle Up</span>
+    </a>
+    <a href="/trip" class="nav-item">
+      <span class="ni">✦</span> <span>Trip</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <div class="trip-card">
+      <div class="trip-card-top">
+        <span class="trip-card-label">Active Trip</span>
+        <a href="/trip" class="trip-card-edit">Edit</a>
+      </div>
+      <div class="trip-card-name">{{ trip.cover }} {{ trip.name }}</div>
+      <div class="trip-card-dates">{{ trip.start_date | fmtdate }} — {{ trip.end_date | fmtdate }}</div>
+      <div class="trip-avatars">
+        {% for member in trip.members %}
+        <span class="av sm" style="--color:{{ loop.cycle('#6366f1', '#ec4899', '#14b8a6', '#f59e0b', '#22c55e', '#64748b', '#8b5cf6', '#f97316') }}">{{ member[0] }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 class="page-title">Overview</h1>
+      <p class="page-sub">{{ trip.name }} · {{ trip.members | length }} members · {{ trip.start_date | fmtdate }} – {{ trip.end_date | fmtdate }}</p>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost btn-sm">Export CSV</button>
+      <a href="/expenses" class="btn btn-primary btn-sm">+ Add Expense</a>
+    </div>
+  </header>
+
+  <!-- PAGE BODY -->
+  <div class="page-body">
+
+    <!-- STAT CARDS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-card-label">Total Spent</div>
+        <div class="stat-card-value">$3,284.50</div>
+        <div class="stat-card-sub col-muted">across 18 expenses</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Per Person</div>
+        <div class="stat-card-value">$656.90</div>
+        <div class="stat-card-sub col-muted">5 members</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Budget Left</div>
+        <div class="stat-card-value col-success">$715.50</div>
+        <div class="stat-card-sub col-muted">of $4,000 total</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Unsettled</div>
+        <div class="stat-card-value col-warning">$342.00</div>
+        <div class="stat-card-sub col-muted">3 debts pending</div>
+      </div>
+    </div>
+
+    <!-- BUDGET PROGRESS -->
+    <div class="card">
+      <div class="card-body">
+        <div class="progress-wrap">
+          <div class="progress-header">
+            <span>Budget Usage — <strong>$3,284.50</strong> of $4,000.00 spent</span>
+            <strong style="color:var(--accent-lt)">82%</strong>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" style="width:82%"></div>
+          </div>
+          <div style="display:flex;gap:18px;font-size:12px;color:var(--muted)">
+            <span style="display:flex;align-items:center;gap:5px">
+              <span style="width:8px;height:8px;border-radius:50%;background:#6366f1;display:inline-block"></span>
+              Spent $3,284.50
+            </span>
+            <span style="display:flex;align-items:center;gap:5px">
+              <span style="width:8px;height:8px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);display:inline-block"></span>
+              Remaining $715.50
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENT GRID -->
+    <div class="content-grid">
+
+      <!-- RECENT EXPENSES -->
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">Recent Expenses</span>
+          <a href="/expenses" class="card-link">View all →</a>
+        </div>
+        <div class="expense-list">
+          <div class="expense-row">
+            <div class="expense-cat-icon cat-food">🍜</div>
+            <div class="expense-info">
+              <div class="expense-name">Dinner at Sarong</div>
+              <div class="expense-meta">Paid by <b>Alex</b> · Jun 14 · Split 5 ways</div>
+            </div>
+            <div class="expense-right">
+              <div class="expense-amount">$186.00</div>
+              <span class="tag tag-food">Food</span>
+            </div>
+          </div>
+          <div class="expense-row">
+            <div class="expense-cat-icon cat-transport">🏍</div>
+            <div class="expense-info">
+              <div class="expense-name">Scooter Rental × 5</div>
+              <div class="expense-meta">Paid by <b>Sara</b> · Jun 14 · Split 5 ways</div>
+            </div>
+            <div class="expense-right">
+              <div class="expense-amount">$120.00</div>
+              <span class="tag tag-transport">Transport</span>
+            </div>
+          </div>
+          <div class="expense-row">
+            <div class="expense-cat-icon cat-stay">🏨</div>
+            <div class="expense-info">
+              <div class="expense-name">Villa Ubud — Night 3</div>
+              <div class="expense-meta">Paid by <b>Mike</b> · Jun 15 · Split 5 ways</div>
+            </div>
+            <div class="expense-right">
+              <div class="expense-amount">$350.00</div>
+              <span class="tag tag-stay">Stay</span>
+            </div>
+          </div>
+          <div class="expense-row">
+            <div class="expense-cat-icon cat-activity">🌊</div>
+            <div class="expense-info">
+              <div class="expense-name">Surf Lesson — Kuta Beach</div>
+              <div class="expense-meta">Paid by <b>Jess</b> · Jun 16 · Split 5 ways</div>
+            </div>
+            <div class="expense-right">
+              <div class="expense-amount">$225.00</div>
+              <span class="tag tag-activity">Activity</span>
+            </div>
+          </div>
+          <div class="expense-row">
+            <div class="expense-cat-icon cat-food">☕</div>
+            <div class="expense-info">
+              <div class="expense-name">Café Breakfasts</div>
+              <div class="expense-meta">Paid by <b>Leo</b> · Jun 16 · Split 5 ways</div>
+            </div>
+            <div class="expense-right">
+              <div class="expense-amount">$64.50</div>
+              <span class="tag tag-food">Food</span>
+            </div>
+          </div>
+          <div class="expense-row">
+            <div class="expense-cat-icon cat-shopping">🛍</div>
+            <div class="expense-info">
+              <div class="expense-name">Ubud Market Souvenirs</div>
+              <div class="expense-meta">Paid by <b>Alex</b> · Jun 17 · Split 3 ways</div>
+            </div>
+            <div class="expense-right">
+              <div class="expense-amount">$95.00</div>
+              <span class="tag tag-shopping">Shopping</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COL -->
+      <div class="right-col">
+
+        <!-- CATEGORY BREAKDOWN -->
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">By Category</span>
+          </div>
+          <div class="card-body">
+            <div class="cat-breakdown">
+              <div class="cat-row">
+                <div class="cat-row-left">
+                  <span class="cat-dot" style="background:#6366f1"></span>
+                  <span>Stay</span>
+                </div>
+                <div class="cat-bar-track"><div class="cat-bar" style="width:42%;background:#6366f1"></div></div>
+                <span class="cat-pct">42%</span>
+              </div>
+              <div class="cat-row">
+                <div class="cat-row-left">
+                  <span class="cat-dot" style="background:#ec4899"></span>
+                  <span>Food</span>
+                </div>
+                <div class="cat-bar-track"><div class="cat-bar" style="width:28%;background:#ec4899"></div></div>
+                <span class="cat-pct">28%</span>
+              </div>
+              <div class="cat-row">
+                <div class="cat-row-left">
+                  <span class="cat-dot" style="background:#14b8a6"></span>
+                  <span>Activity</span>
+                </div>
+                <div class="cat-bar-track"><div class="cat-bar" style="width:18%;background:#14b8a6"></div></div>
+                <span class="cat-pct">18%</span>
+              </div>
+              <div class="cat-row">
+                <div class="cat-row-left">
+                  <span class="cat-dot" style="background:#f59e0b"></span>
+                  <span>Transport</span>
+                </div>
+                <div class="cat-bar-track"><div class="cat-bar" style="width:8%;background:#f59e0b"></div></div>
+                <span class="cat-pct">8%</span>
+              </div>
+              <div class="cat-row">
+                <div class="cat-row-left">
+                  <span class="cat-dot" style="background:#64748b"></span>
+                  <span>Other</span>
+                </div>
+                <div class="cat-bar-track"><div class="cat-bar" style="width:4%;background:#64748b"></div></div>
+                <span class="cat-pct">4%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BALANCES SNAPSHOT -->
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">Who Owes Who</span>
+            <a href="/settle-up" class="card-link">Settle →</a>
+          </div>
+          <div class="balance-rows">
+            <div class="balance-row">
+              <div class="balance-av-pair">
+                <span class="av sm" style="--color:#ec4899">S</span>
+                <span class="balance-arrow">→</span>
+                <span class="av sm" style="--color:#6366f1">A</span>
+              </div>
+              <span class="balance-desc"><b>Sara</b> owes <b>Alex</b></span>
+              <span class="balance-amt">$74.00</span>
+            </div>
+            <div class="balance-row">
+              <div class="balance-av-pair">
+                <span class="av sm" style="--color:#f59e0b">J</span>
+                <span class="balance-arrow">→</span>
+                <span class="av sm" style="--color:#14b8a6">M</span>
+              </div>
+              <span class="balance-desc"><b>Jess</b> owes <b>Mike</b></span>
+              <span class="balance-amt">$140.00</span>
+            </div>
+            <div class="balance-row">
+              <div class="balance-av-pair">
+                <span class="av sm" style="--color:#22c55e">L</span>
+                <span class="balance-arrow">→</span>
+                <span class="av sm" style="--color:#ec4899">S</span>
+              </div>
+              <span class="balance-desc"><b>Leo</b> owes <b>Sara</b></span>
+              <span class="balance-amt">$128.00</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /right-col -->
+    </div><!-- /content-grid -->
+
+  </div><!-- /page-body -->
+</div><!-- /main -->
+
+</body>
+</html>

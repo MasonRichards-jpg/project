@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PayBack — Trip Settings</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">P$</div>
+    <span class="brand-name">PayBack</span>
+  </div>
+  <nav class="sidebar-nav">
+    <span class="nav-label">Menu</span>
+    <a href="/" class="nav-item">
+      <span class="ni">⊞</span> <span>Overview</span>
+    </a>
+    <a href="/expenses" class="nav-item">
+      <span class="ni">◈</span> <span>Expenses</span>
+    </a>
+    <a href="/balances" class="nav-item">
+      <span class="ni">⚖</span> <span>Balances</span>
+    </a>
+    <a href="/settle-up" class="nav-item">
+      <span class="ni">✓</span> <span>Settle Up</span>
+    </a>
+    <a href="/trip" class="nav-item active">
+      <span class="ni">✦</span> <span>Trip</span>
+    </a>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="trip-card">
+      <div class="trip-card-top">
+        <span class="trip-card-label">Active Trip</span>
+        <a href="/trip" class="trip-card-edit">Edit</a>
+      </div>
+      <div class="trip-card-name">{{ trip.cover }} {{ trip.name }}</div>
+      <div class="trip-card-dates">{{ trip.start_date | fmtdate }} — {{ trip.end_date | fmtdate }}</div>
+      <div class="trip-avatars">
+        {% for member in trip.members %}
+        <span class="av sm" style="--color:{{ loop.cycle('#6366f1', '#ec4899', '#14b8a6', '#f59e0b', '#22c55e', '#64748b', '#8b5cf6', '#f97316') }}">{{ member[0] }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 class="page-title">Trip Settings</h1>
+      <p class="page-sub">Manage trip details, budget, and members</p>
+    </div>
+    <div class="topbar-right">
+      <form method="POST" action="/trip/new" style="display:inline">
+        <button type="submit" class="btn btn-ghost btn-sm">+ New Trip</button>
+      </form>
+      <button type="submit" form="trip-form" class="btn btn-primary btn-sm">Save Changes</button>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <div class="trip-layout">
+
+      <!-- LEFT COLUMN -->
+      <div class="trip-left">
+
+        <!-- TRIP DETAILS -->
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">Trip Details</span>
+          </div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:16px">
+          <form id="trip-form" method="POST" action="/trip/save">
+
+            <div class="form-group">
+              <label class="form-label">Trip Name</label>
+              <input class="form-input" type="text" name="trip_name" value="{{ trip.name }}" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Destination</label>
+              <input class="form-input" type="text" name="destination" value="{{ trip.destination }}" />
+            </div>
+
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label">Start Date</label>
+                <input class="form-input" type="date" name="start_date" value="{{ trip.start_date }}" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">End Date</label>
+                <input class="form-input" type="date" name="end_date" value="{{ trip.end_date }}" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Currency</label>
+              <select class="form-select" name="currency">
+                <option value="USD" {% if trip.currency == 'USD' %}selected{% endif %}>USD — US Dollar</option>
+                <option value="EUR" {% if trip.currency == 'EUR' %}selected{% endif %}>EUR — Euro</option>
+                <option value="GBP" {% if trip.currency == 'GBP' %}selected{% endif %}>GBP — British Pound</option>
+                <option value="JPY" {% if trip.currency == 'JPY' %}selected{% endif %}>JPY — Japanese Yen</option>
+                <option value="IDR" {% if trip.currency == 'IDR' %}selected{% endif %}>IDR — Indonesian Rupiah</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Trip Cover</label>
+              <div class="cover-picker">
+                <label class="cover-option"><input type="radio" name="cover" value="🌴" hidden {% if trip.cover == '🌴' %}checked{% endif %}>🌴</label>
+                <label class="cover-option"><input type="radio" name="cover" value="🏖" hidden {% if trip.cover == '🏖' %}checked{% endif %}>🏖</label>
+                <label class="cover-option"><input type="radio" name="cover" value="🗻" hidden {% if trip.cover == '🗻' %}checked{% endif %}>🗻</label>
+                <label class="cover-option"><input type="radio" name="cover" value="🏙" hidden {% if trip.cover == '🏙' %}checked{% endif %}>🏙</label>
+                <label class="cover-option"><input type="radio" name="cover" value="🚢" hidden {% if trip.cover == '🚢' %}checked{% endif %}>🚢</label>
+                <label class="cover-option"><input type="radio" name="cover" value="✈️" hidden {% if trip.cover == '✈️' %}checked{% endif %}>✈️</label>
+                <label class="cover-option"><input type="radio" name="cover" value="🏕" hidden {% if trip.cover == '🏕' %}checked{% endif %}>🏕</label>
+                <label class="cover-option"><input type="radio" name="cover" value="🎡" hidden {% if trip.cover == '🎡' %}checked{% endif %}>🎡</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Description (optional)</label>
+              <textarea class="form-textarea" name="description" placeholder="Add a note about this trip…">{{ trip.description }}</textarea>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- MEMBERS MANAGER -->
+        </form>
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">Members</span>
+            <span style="font-size:12px;color:var(--muted)">5 people</span>
+          </div>
+
+          <div class="member-manager">
+
+            <div class="member-row">
+              <span class="av md" style="--color:#6366f1">A</span>
+              <div class="member-row-info">
+                <div class="member-row-name">Alex Johnson</div>
+                <div class="member-row-email">alex@email.com</div>
+              </div>
+              <span class="member-role">Organizer</span>
+            </div>
+
+            <div class="member-row">
+              <span class="av md" style="--color:#ec4899">S</span>
+              <div class="member-row-info">
+                <div class="member-row-name">Sara Kim</div>
+                <div class="member-row-email">sara@email.com</div>
+              </div>
+              <form method="POST" action="/trip/remove-member" style="display:inline">
+                <input type="hidden" name="member" value="Sara Kim">
+                <button type="submit" class="btn btn-danger btn-xs">Remove</button>
+              </form>
+            </div>
+
+            <div class="member-row">
+              <span class="av md" style="--color:#14b8a6">M</span>
+              <div class="member-row-info">
+                <div class="member-row-name">Mike Torres</div>
+                <div class="member-row-email">mike@email.com</div>
+              </div>
+              <form method="POST" action="/trip/remove-member" style="display:inline">
+                <input type="hidden" name="member" value="Mike Torres">
+                <button type="submit" class="btn btn-danger btn-xs">Remove</button>
+              </form>
+            </div>
+
+            <div class="member-row">
+              <span class="av md" style="--color:#f59e0b">J</span>
+              <div class="member-row-info">
+                <div class="member-row-name">Jess Park</div>
+                <div class="member-row-email">jess@email.com</div>
+              </div>
+              <form method="POST" action="/trip/remove-member" style="display:inline">
+                <input type="hidden" name="member" value="Jess Park">
+                <button type="submit" class="btn btn-danger btn-xs">Remove</button>
+              </form>
+            </div>
+
+            <div class="member-row">
+              <span class="av md" style="--color:#22c55e">L</span>
+              <div class="member-row-info">
+                <div class="member-row-name">Leo Martinez</div>
+                <div class="member-row-email">leo@email.com</div>
+              </div>
+              <form method="POST" action="/trip/remove-member" style="display:inline">
+                <input type="hidden" name="member" value="Leo Martinez">
+                <button type="submit" class="btn btn-danger btn-xs">Remove</button>
+              </form>
+            </div>
+
+            <form method="POST" action="/trip/add-member" class="add-member-row">
+              <input class="form-input" type="text" name="member" placeholder="Name or email…" />
+              <button type="submit" class="btn btn-primary btn-sm">+ Add</button>
+            </form>
+
+          </div>
+        </div>
+
+      </div><!-- /trip-left -->
+
+      <!-- RIGHT COLUMN -->
+      <div class="trip-right">
+
+        <!-- BUDGET -->
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">Budget</span>
+          </div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:16px">
+
+            <div class="form-group">
+              <label class="form-label">Total Trip Budget</label>
+              <div class="input-prefix">
+                <span class="prefix">$</span>
+                <input class="form-input" type="text" name="budget" value="{{ trip.budget }}" form="trip-form" />
+              </div>
+            </div>
+
+            <div class="budget-calc">
+              <div class="budget-split-row">
+                <span class="budget-split-label">Total budget</span>
+                <span class="budget-split-val">$4,000.00</span>
+              </div>
+              <div class="budget-split-row">
+                <span class="budget-split-label">Per person (5)</span>
+                <span class="budget-split-val">$800.00</span>
+              </div>
+              <div class="budget-split-row">
+                <span class="budget-split-label">Spent so far</span>
+                <span class="budget-split-val col-warning">$3,284.50</span>
+              </div>
+              <div class="budget-split-row">
+                <span class="budget-split-label">Remaining</span>
+                <span class="budget-split-val col-success">$715.50</span>
+              </div>
+            </div>
+
+            <div class="progress-wrap">
+              <div class="progress-header">
+                <span>Usage</span>
+                <strong style="color:var(--warning)">82%</strong>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill warn" style="width:82%"></div>
+              </div>
+            </div>
+
+            <div style="padding:12px;background:var(--warning-bg);border:1px solid rgba(245,158,11,.2);border-radius:var(--radius-sm);font-size:12px;color:var(--warning)">
+              ⚠ You've used 82% of your budget with 5 days remaining.
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SPLIT SETTINGS -->
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">Default Split</span>
+          </div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:14px">
+
+            <div class="form-group">
+              <label class="form-label">Split method</label>
+              <select class="form-select" name="split_method" form="trip-form">
+                <option value="equal" {% if trip.split_method == 'equal' %}selected{% endif %}>Equal split (default)</option>
+                <option value="percentage" {% if trip.split_method == 'percentage' %}selected{% endif %}>Percentage split</option>
+                <option value="custom" {% if trip.split_method == 'custom' %}selected{% endif %}>Custom amounts</option>
+              </select>
+            </div>
+
+            <div style="font-size:12px;color:var(--muted);padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm)">
+              Each expense will be split equally among all members by default. You can override this per expense.
+            </div>
+
+          </div>
+        </div>
+
+        <!-- DANGER ZONE -->
+        <div class="card" style="border-color:rgba(244,63,94,.25)">
+          <div class="card-head" style="border-color:rgba(244,63,94,.2)">
+            <span class="card-title col-danger">Danger Zone</span>
+          </div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div style="font-size:13px;font-weight:500">Reset all expenses</div>
+                <div style="font-size:12px;color:var(--muted);margin-top:2px">Remove all 18 expenses from this trip</div>
+              </div>
+              <form method="POST" action="/trip/reset" style="display:inline">
+                <button type="submit" class="btn btn-danger btn-sm">Reset</button>
+              </form>
+            </div>
+            <div style="height:1px;background:rgba(244,63,94,.15)"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div style="font-size:13px;font-weight:500">Delete trip</div>
+                <div style="font-size:12px;color:var(--muted);margin-top:2px">Permanently remove Bali 2025 and all data</div>
+              </div>
+              <form method="POST" action="/trip/delete" style="display:inline">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /trip-right -->
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

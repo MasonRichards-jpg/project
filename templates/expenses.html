@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PayBack — Expenses</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">P$</div>
+    <span class="brand-name">PayBack</span>
+  </div>
+  <nav class="sidebar-nav">
+    <span class="nav-label">Menu</span>
+    <a href="/" class="nav-item">
+      <span class="ni">⊞</span> <span>Overview</span>
+    </a>
+    <a href="/expenses" class="nav-item active">
+      <span class="ni">◈</span> <span>Expenses</span>
+    </a>
+    <a href="/balances" class="nav-item">
+      <span class="ni">⚖</span> <span>Balances</span>
+    </a>
+    <a href="/settle-up" class="nav-item">
+      <span class="ni">✓</span> <span>Settle Up</span>
+    </a>
+    <a href="/trip" class="nav-item">
+      <span class="ni">✦</span> <span>Trip</span>
+    </a>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="trip-card">
+      <div class="trip-card-top">
+        <span class="trip-card-label">Active Trip</span>
+        <a href="/trip" class="trip-card-edit">Edit</a>
+      </div>
+      <div class="trip-card-name">{{ trip.cover }} {{ trip.name }}</div>
+      <div class="trip-card-dates">{{ trip.start_date | fmtdate }} — {{ trip.end_date | fmtdate }}</div>
+      <div class="trip-avatars">
+        {% for member in trip.members %}
+        <span class="av sm" style="--color:{{ loop.cycle('#6366f1', '#ec4899', '#14b8a6', '#f59e0b', '#22c55e', '#64748b', '#8b5cf6', '#f97316') }}">{{ member[0] }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 class="page-title">Expenses</h1>
+      <p class="page-sub">18 expenses · $3,284.50 total</p>
+    </div>
+    <div class="topbar-right">
+      <form method="GET" action="/expenses/export" style="display:inline">
+        <button type="submit" class="btn btn-ghost btn-sm">Export CSV</button>
+      </form>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <div class="expenses-layout">
+
+      <!-- ADD EXPENSE FORM -->
+      <div>
+        <div class="card add-form">
+          <div class="card-head">
+            <span class="card-title">Add Expense</span>
+          </div>
+          <div class="card-body">
+          <form method="POST" action="/expenses/add">
+
+            <div class="form-group">
+              <label class="form-label">Description</label>
+              <input class="form-input" type="text" name="description" placeholder="e.g. Dinner at The Shack" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Amount (USD)</label>
+              <div class="input-prefix">
+                <span class="prefix">$</span>
+                <input class="form-input" type="text" name="amount" placeholder="0.00" />
+              </div>
+            </div>
+
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label">Date</label>
+                <input class="form-input" type="date" name="date" value="2025-06-17" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Paid by</label>
+                <select class="form-select" name="paid_by">
+                  <option>Alex</option>
+                  <option>Sara</option>
+                  <option>Mike</option>
+                  <option>Jess</option>
+                  <option>Leo</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <div class="cat-picker">
+                <label class="cat-opt"><input type="radio" name="category" value="food" hidden checked>🍜 Food</label>
+                <label class="cat-opt"><input type="radio" name="category" value="stay" hidden>🏨 Stay</label>
+                <label class="cat-opt"><input type="radio" name="category" value="transport" hidden>🏍 Transport</label>
+                <label class="cat-opt"><input type="radio" name="category" value="activity" hidden>🌊 Activity</label>
+                <label class="cat-opt"><input type="radio" name="category" value="shopping" hidden>🛍 Shopping</label>
+                <label class="cat-opt"><input type="radio" name="category" value="other" hidden>· · Other</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Split between</label>
+              <div class="split-opts">
+                <label class="split-chip"><input type="checkbox" name="split" value="Alex" hidden checked>Alex</label>
+                <label class="split-chip"><input type="checkbox" name="split" value="Sara" hidden checked>Sara</label>
+                <label class="split-chip"><input type="checkbox" name="split" value="Mike" hidden checked>Mike</label>
+                <label class="split-chip"><input type="checkbox" name="split" value="Jess" hidden checked>Jess</label>
+                <label class="split-chip"><input type="checkbox" name="split" value="Leo" hidden checked>Leo</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Notes (optional)</label>
+              <textarea class="form-textarea" name="notes" placeholder="Any extra details…"></textarea>
+            </div>
+
+            <div style="display:flex;gap:8px;padding-top:4px">
+              <button type="reset" class="btn btn-ghost" style="flex:1;justify-content:center">Clear</button>
+              <button type="submit" class="btn btn-primary" style="flex:2;justify-content:center">Save Expense</button>
+            </div>
+
+          </form>
+          </div>
+        </div>
+
+        <!-- QUICK STATS below form -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
+          <div class="stat-card">
+            <div class="stat-card-label">This Week</div>
+            <div class="stat-card-value" style="font-size:20px">$864.50</div>
+            <div class="stat-card-sub col-muted">7 expenses</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Today</div>
+            <div class="stat-card-value" style="font-size:20px">$159.00</div>
+            <div class="stat-card-sub col-muted">2 expenses</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXPENSE TABLE PANEL -->
+      <div class="card" style="display:flex;flex-direction:column;overflow:hidden">
+        <form method="GET" action="/expenses">
+        <div class="card-head" style="flex-shrink:0">
+          <span class="card-title">All Expenses</span>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:12px;color:var(--muted)">Sort:</span>
+            <select class="form-select" name="sort" style="width:auto;padding:4px 8px;font-size:12px" onchange="this.form.submit()">
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="highest">Highest amount</option>
+              <option value="lowest">Lowest amount</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- filters -->
+        <div style="padding:12px 20px;border-bottom:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;flex-shrink:0">
+          <div class="search-wrap" style="max-width:220px">
+            <span class="search-icon">⌕</span>
+            <input class="form-input" type="text" name="search" placeholder="Search expenses…" style="font-size:12px;padding:6px 10px 6px 28px" />
+          </div>
+          <div class="filter-chips">
+            <label class="fchip"><input type="radio" name="cat_filter" value="all" hidden checked>All</label>
+            <label class="fchip"><input type="radio" name="cat_filter" value="food" hidden>🍜 Food</label>
+            <label class="fchip"><input type="radio" name="cat_filter" value="stay" hidden>🏨 Stay</label>
+            <label class="fchip"><input type="radio" name="cat_filter" value="transport" hidden>🏍 Transport</label>
+            <label class="fchip"><input type="radio" name="cat_filter" value="activity" hidden>🌊 Activity</label>
+            <label class="fchip"><input type="radio" name="cat_filter" value="shopping" hidden>🛍 Shopping</label>
+          </div>
+          <button type="submit" class="btn btn-ghost btn-xs">Apply</button>
+        </div>
+        </form>
+
+        <!-- table -->
+        <div style="overflow-y:auto;flex:1">
+          <table class="expense-table">
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Paid by</th>
+                <th>Date</th>
+                <th>Split</th>
+                <th style="text-align:right">Amount</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="td-desc-main">Dinner at Sarong</div>
+                  <div class="td-desc-sub">Romantic beachside dinner</div>
+                </td>
+                <td><span class="tag tag-food">🍜 Food</span></td>
+                <td><div class="td-payer"><span class="av sm" style="--color:#6366f1">A</span> Alex</div></td>
+                <td style="color:var(--muted);font-size:12px">Jun 14</td>
+                <td style="color:var(--muted);font-size:12px">5 people</td>
+                <td class="amt">$186.00</td>
+                <td>
+                  <div class="action-btns">
+                    <a href="/expenses/1/edit" class="btn btn-ghost btn-xs">Edit</a>
+                    <form method="POST" action="/expenses/1/delete" style="display:inline"><button type="submit" class="btn btn-danger btn-xs">Del</button></form>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="td-desc-main">Scooter Rental × 5</div>
+                  <div class="td-desc-sub">Full day rental</div>
+                </td>
+                <td><span class="tag tag-transport">🏍 Transport</span></td>
+                <td><div class="td-payer"><span class="av sm" style="--color:#ec4899">S</span> Sara</div></td>
+                <td style="color:var(--muted);font-size:12px">Jun 14</td>
+                <td style="color:var(--muted);font-size:12px">5 people</td>
+                <td class="amt">$120.00</td>
+                <td>
+                  <div class="action-btns">
+                    <a href="/expenses/2/edit" class="btn btn-ghost btn-xs">Edit</a>
+                    <form method="POST" action="/expenses/2/delete" style="display:inline"><button type="submit" class="btn btn-danger btn-xs">Del</button></form>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="td-desc-main">Villa Ubud — Night 3</div>
+                  <div class="td-desc-sub">5-bedroom villa</div>
+                </td>
+                <td><span class="tag tag-stay">🏨 Stay</span></td>
+                <td><div class="td-payer"><span class="av sm" style="--color:#14b8a6">M</span> Mike</div></td>
+                <td style="color:var(--muted);font-size:12px">Jun 15</td>
+                <td style="color:var(--muted);font-size:12px">5 people</td>
+                <td class="amt">$350.00</td>
+                <td>
+                  <div class="action-btns">
+                    <a href="/expenses/3/edit" class="btn btn-ghost btn-xs">Edit</a>
+                    <form method="POST" action="/expenses/3/delete" style="display:inline"><button type="submit" class="btn btn-danger btn-xs">Del</button></form>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="td-desc-main">Surf Lesson — Kuta</div>
+                  <div class="td-desc-sub">2hr beginner session</div>
+                </td>
+                <td><span class="tag tag-activity">🌊 Activity</span></td>
+                <td><div class="td-payer"><span class="av sm" style="--color:#f59e0b">J</span> Jess</div></td>
+                <td style="color:var(--muted);font-size:12px">Jun 16</td>
+                <td style="color:var(--muted);font-size:12px">5 people</td>
+                <td class="amt">$225.00</td>
+                <td>
+                  <div class="action-btns">
+                    <a href="/expenses/4/edit" class="btn btn-ghost btn-xs">Edit</a>
+                    <form method="POST" action="/expenses/4/delete" style="display:inline"><button type="submit" class="btn btn-danger btn-xs">Del</button></form>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="td-desc-main">Café Breakfasts</div>
+                  <div class="td-desc-sub">Morning coffees + food</div>
+                </td>
+                <td><span class="tag tag-food">🍜 Food</span></td>
+                <td><div class="td-payer"><span class="av sm" style="--color:#22c55e">L</span> Leo</div></td>
+                <td style="color:var(--muted);font-size:12px">Jun 16</td>
+                <td style="color:var(--muted);font-size:12px">5 people</td>
+                <td class="amt">$64.50</td>
+                <td>
+                  <div class="action-btns">
+                    <a href="/expenses/5/edit" class="btn btn-ghost btn-xs">Edit</a>
+                    <form method="POST" action="/expenses/5/delete" style="display:inline"><button type="submit" class="btn btn-danger btn-xs">Del</button></form>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="td-desc-main">Ubud Market Souvenirs</div>
+                  <div class="td-desc-sub">Gifts & keepsakes</div>
+                </td>
+                <td><span class="tag tag-shopping">🛍 Shopping</span></td>
+                <td><div class="td-payer"><span class="av sm" style="--color:#6366f1">A</span> Alex</div></td>
+                <td style="color:var(--muted);font-size:12px">Jun 17</td>
+                <td style="color:var(--muted);font-size:12px">3 people</td>
+                <td class="amt">$95.00</td>
+                <td>
+                  <div class="action-btns">
+                    <a href="/expenses/6/edit" class="btn btn-ghost btn-xs">Edit</a>
+                    <form method="POST" action="/expenses/6/delete" style="display:inline"><button type="submit" class="btn btn-danger btn-xs">Del</button></form>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="td-desc-main">Waterfall Hike Entry</div>
+                  <div class="td-desc-sub">Sekumpul waterfall</div>
+                </td>
+                <td><span class="tag tag-activity">🌊 Activity</span></td>
+                <td><div class="td-payer"><span class="av sm" style="--color:#ec4899">S</span> Sara</div></td>
+                <td style="color:var(--muted);font-size:12px">Jun 17</td>
+                <td style="color:var(--muted);font-size:12px">5 people</td>
+                <td class="amt">$75.00</td>
+                <td>
+                  <div class="action-btns">
+                    <a href="/expenses/7/edit" class="btn btn-ghost btn-xs">Edit</a>
+                    <form method="POST" action="/expenses/7/delete" style="display:inline"><button type="submit" class="btn btn-danger btn-xs">Del</button></form>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="td-desc-main">Taxi to Airport</div>
+                  <div class="td-desc-sub">Ngurah Rai airport</div>
+                </td>
+                <td><span class="tag tag-transport">🏍 Transport</span></td>
+                <td><div class="td-payer"><span class="av sm" style="--color:#14b8a6">M</span> Mike</div></td>
+                <td style="color:var(--muted);font-size:12px">Jun 17</td>
+                <td style="color:var(--muted);font-size:12px">5 people</td>
+                <td class="amt">$45.00</td>
+                <td>
+                  <div class="action-btns">
+                    <a href="/expenses/8/edit" class="btn btn-ghost btn-xs">Edit</a>
+                    <form method="POST" action="/expenses/8/delete" style="display:inline"><button type="submit" class="btn btn-danger btn-xs">Del</button></form>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="td-desc-main">Spa Day — Seminyak</div>
+                  <div class="td-desc-sub">Massage + treatments</div>
+                </td>
+                <td><span class="tag tag-activity">🌊 Activity</span></td>
+                <td><div class="td-payer"><span class="av sm" style="--color:#f59e0b">J</span> Jess</div></td>
+                <td style="color:var(--muted);font-size:12px">Jun 18</td>
+                <td style="color:var(--muted);font-size:12px">4 people</td>
+                <td class="amt">$280.00</td>
+                <td>
+                  <div class="action-btns">
+                    <a href="/expenses/9/edit" class="btn btn-ghost btn-xs">Edit</a>
+                    <form method="POST" action="/expenses/9/delete" style="display:inline"><button type="submit" class="btn btn-danger btn-xs">Del</button></form>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="td-desc-main">Nasi Goreng Dinner</div>
+                  <div class="td-desc-sub">Street food night</div>
+                </td>
+                <td><span class="tag tag-food">🍜 Food</span></td>
+                <td><div class="td-payer"><span class="av sm" style="--color:#22c55e">L</span> Leo</div></td>
+                <td style="color:var(--muted);font-size:12px">Jun 18</td>
+                <td style="color:var(--muted);font-size:12px">5 people</td>
+                <td class="amt">$42.00</td>
+                <td>
+                  <div class="action-btns">
+                    <a href="/expenses/10/edit" class="btn btn-ghost btn-xs">Edit</a>
+                    <form method="POST" action="/expenses/10/delete" style="display:inline"><button type="submit" class="btn btn-danger btn-xs">Del</button></form>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- table footer -->
+        <div style="padding:12px 20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:var(--surface2)">
+          <span style="font-size:12px;color:var(--muted)">Showing 10 of 18 expenses</span>
+          <div style="display:flex;gap:6px">
+            <a href="/expenses?page=1" class="btn btn-ghost btn-xs">← Prev</a>
+            <a href="/expenses?page=1" class="btn btn-ghost btn-xs" style="background:var(--accent-glow);color:var(--accent-lt);border-color:var(--accent)">1</a>
+            <a href="/expenses?page=2" class="btn btn-ghost btn-xs">2</a>
+            <a href="/expenses?page=2" class="btn btn-ghost btn-xs">Next →</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

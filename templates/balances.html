@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PayBack — Balances</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">P$</div>
+    <span class="brand-name">PayBack</span>
+  </div>
+  <nav class="sidebar-nav">
+    <span class="nav-label">Menu</span>
+    <a href="/" class="nav-item">
+      <span class="ni">⊞</span> <span>Overview</span>
+    </a>
+    <a href="/expenses" class="nav-item">
+      <span class="ni">◈</span> <span>Expenses</span>
+    </a>
+    <a href="/balances" class="nav-item active">
+      <span class="ni">⚖</span> <span>Balances</span>
+    </a>
+    <a href="/settle-up" class="nav-item">
+      <span class="ni">✓</span> <span>Settle Up</span>
+    </a>
+    <a href="/trip" class="nav-item">
+      <span class="ni">✦</span> <span>Trip</span>
+    </a>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="trip-card">
+      <div class="trip-card-top">
+        <span class="trip-card-label">Active Trip</span>
+        <a href="/trip" class="trip-card-edit">Edit</a>
+      </div>
+      <div class="trip-card-name">{{ trip.cover }} {{ trip.name }}</div>
+      <div class="trip-card-dates">{{ trip.start_date | fmtdate }} — {{ trip.end_date | fmtdate }}</div>
+      <div class="trip-avatars">
+        {% for member in trip.members %}
+        <span class="av sm" style="--color:{{ loop.cycle('#6366f1', '#ec4899', '#14b8a6', '#f59e0b', '#22c55e', '#64748b', '#8b5cf6', '#f97316') }}">{{ member[0] }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 class="page-title">Balances</h1>
+      <p class="page-sub">Who paid what · Fair share $656.90 per person</p>
+    </div>
+    <div class="topbar-right">
+      <a href="/settle-up" class="btn btn-primary btn-sm">Settle Up →</a>
+    </div>
+  </header>
+
+  <div class="page-body">
+
+    <!-- MEMBER BALANCE CARDS -->
+    <div class="member-grid">
+
+      <!-- Alex -->
+      <div class="member-card">
+        <span class="av lg" style="--color:#6366f1">A</span>
+        <div class="member-card-name">Alex</div>
+        <div class="member-stats">
+          <div class="member-stat-row">
+            <span class="member-stat-label">Paid</span>
+            <span class="member-stat-val col-success">$842.00</span>
+          </div>
+          <div class="member-stat-row">
+            <span class="member-stat-label">Fair share</span>
+            <span class="member-stat-val">$656.90</span>
+          </div>
+          <div class="member-divider"></div>
+        </div>
+        <div class="member-net positive">+$185.10 owed to him</div>
+      </div>
+
+      <!-- Sara -->
+      <div class="member-card">
+        <span class="av lg" style="--color:#ec4899">S</span>
+        <div class="member-card-name">Sara</div>
+        <div class="member-stats">
+          <div class="member-stat-row">
+            <span class="member-stat-label">Paid</span>
+            <span class="member-stat-val col-success">$720.50</span>
+          </div>
+          <div class="member-stat-row">
+            <span class="member-stat-label">Fair share</span>
+            <span class="member-stat-val">$656.90</span>
+          </div>
+          <div class="member-divider"></div>
+        </div>
+        <div class="member-net positive">+$63.60 owed to her</div>
+      </div>
+
+      <!-- Mike -->
+      <div class="member-card">
+        <span class="av lg" style="--color:#14b8a6">M</span>
+        <div class="member-card-name">Mike</div>
+        <div class="member-stats">
+          <div class="member-stat-row">
+            <span class="member-stat-label">Paid</span>
+            <span class="member-stat-val col-success">$795.00</span>
+          </div>
+          <div class="member-stat-row">
+            <span class="member-stat-label">Fair share</span>
+            <span class="member-stat-val">$656.90</span>
+          </div>
+          <div class="member-divider"></div>
+        </div>
+        <div class="member-net positive">+$138.10 owed to him</div>
+      </div>
+
+      <!-- Jess -->
+      <div class="member-card">
+        <span class="av lg" style="--color:#f59e0b">J</span>
+        <div class="member-card-name">Jess</div>
+        <div class="member-stats">
+          <div class="member-stat-row">
+            <span class="member-stat-label">Paid</span>
+            <span class="member-stat-val col-danger">$518.00</span>
+          </div>
+          <div class="member-stat-row">
+            <span class="member-stat-label">Fair share</span>
+            <span class="member-stat-val">$656.90</span>
+          </div>
+          <div class="member-divider"></div>
+        </div>
+        <div class="member-net negative">−$138.90 she owes</div>
+      </div>
+
+      <!-- Leo -->
+      <div class="member-card">
+        <span class="av lg" style="--color:#22c55e">L</span>
+        <div class="member-card-name">Leo</div>
+        <div class="member-stats">
+          <div class="member-stat-row">
+            <span class="member-stat-label">Paid</span>
+            <span class="member-stat-val col-danger">$409.00</span>
+          </div>
+          <div class="member-stat-row">
+            <span class="member-stat-label">Fair share</span>
+            <span class="member-stat-val">$656.90</span>
+          </div>
+          <div class="member-divider"></div>
+        </div>
+        <div class="member-net negative">−$247.90 he owes</div>
+      </div>
+
+    </div>
+
+    <!-- CONTRIBUTION BREAKDOWN -->
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Contribution Breakdown</span>
+        <span style="font-size:12px;color:var(--muted)">Total: $3,284.50</span>
+      </div>
+      <div class="card-body">
+        <div class="contrib-section">
+
+          <div class="contrib-row">
+            <span class="av sm" style="--color:#6366f1">A</span>
+            <div class="contrib-meta">
+              <span class="contrib-name">Alex</span>
+              <span class="contrib-sub">$842.00 paid · 6 expenses</span>
+            </div>
+            <div class="contrib-bar-track">
+              <div class="contrib-bar" style="width:25.6%;background:#6366f1"></div>
+            </div>
+            <span class="contrib-val col-success">25.6%</span>
+          </div>
+
+          <div class="contrib-row">
+            <span class="av sm" style="--color:#ec4899">S</span>
+            <div class="contrib-meta">
+              <span class="contrib-name">Sara</span>
+              <span class="contrib-sub">$720.50 paid · 4 expenses</span>
+            </div>
+            <div class="contrib-bar-track">
+              <div class="contrib-bar" style="width:21.9%;background:#ec4899"></div>
+            </div>
+            <span class="contrib-val col-success">21.9%</span>
+          </div>
+
+          <div class="contrib-row">
+            <span class="av sm" style="--color:#14b8a6">M</span>
+            <div class="contrib-meta">
+              <span class="contrib-name">Mike</span>
+              <span class="contrib-sub">$795.00 paid · 5 expenses</span>
+            </div>
+            <div class="contrib-bar-track">
+              <div class="contrib-bar" style="width:24.2%;background:#14b8a6"></div>
+            </div>
+            <span class="contrib-val col-success">24.2%</span>
+          </div>
+
+          <div class="contrib-row">
+            <span class="av sm" style="--color:#f59e0b">J</span>
+            <div class="contrib-meta">
+              <span class="contrib-name">Jess</span>
+              <span class="contrib-sub">$518.00 paid · 2 expenses</span>
+            </div>
+            <div class="contrib-bar-track">
+              <div class="contrib-bar" style="width:15.8%;background:#f59e0b"></div>
+            </div>
+            <span class="contrib-val col-danger">15.8%</span>
+          </div>
+
+          <div class="contrib-row">
+            <span class="av sm" style="--color:#22c55e">L</span>
+            <div class="contrib-meta">
+              <span class="contrib-name">Leo</span>
+              <span class="contrib-sub">$409.00 paid · 1 expense</span>
+            </div>
+            <div class="contrib-bar-track">
+              <div class="contrib-bar" style="width:12.5%;background:#22c55e"></div>
+            </div>
+            <span class="contrib-val col-danger">12.5%</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- FULL TRANSACTION LOG -->
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Transaction Log</span>
+        <form method="GET" action="/balances" style="display:flex;gap:8px">
+          <select class="form-select" name="member" style="width:auto;padding:4px 10px;font-size:12px" onchange="this.form.submit()">
+            <option value="all">All members</option>
+            <option value="Alex">Alex</option>
+            <option value="Sara">Sara</option>
+            <option value="Mike">Mike</option>
+            <option value="Jess">Jess</option>
+            <option value="Leo">Leo</option>
+          </select>
+        </form>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="txn-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Paid by</th>
+              <th>Amount</th>
+              <th>Alex</th>
+              <th>Sara</th>
+              <th>Mike</th>
+              <th>Jess</th>
+              <th>Leo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:var(--muted);font-size:12px;white-space:nowrap">Jun 14</td>
+              <td style="font-weight:500">Dinner at Sarong</td>
+              <td><div style="display:flex;align-items:center;gap:6px"><span class="av sm" style="--color:#6366f1">A</span> Alex</div></td>
+              <td style="font-weight:700">$186.00</td>
+              <td style="color:var(--success);font-size:12px">+$148.80</td>
+              <td style="color:var(--danger);font-size:12px">−$37.20</td>
+              <td style="color:var(--danger);font-size:12px">−$37.20</td>
+              <td style="color:var(--danger);font-size:12px">−$37.20</td>
+              <td style="color:var(--danger);font-size:12px">−$37.20</td>
+            </tr>
+            <tr>
+              <td style="color:var(--muted);font-size:12px;white-space:nowrap">Jun 14</td>
+              <td style="font-weight:500">Scooter Rental × 5</td>
+              <td><div style="display:flex;align-items:center;gap:6px"><span class="av sm" style="--color:#ec4899">S</span> Sara</div></td>
+              <td style="font-weight:700">$120.00</td>
+              <td style="color:var(--danger);font-size:12px">−$24.00</td>
+              <td style="color:var(--success);font-size:12px">+$96.00</td>
+              <td style="color:var(--danger);font-size:12px">−$24.00</td>
+              <td style="color:var(--danger);font-size:12px">−$24.00</td>
+              <td style="color:var(--danger);font-size:12px">−$24.00</td>
+            </tr>
+            <tr>
+              <td style="color:var(--muted);font-size:12px;white-space:nowrap">Jun 15</td>
+              <td style="font-weight:500">Villa Ubud — Night 3</td>
+              <td><div style="display:flex;align-items:center;gap:6px"><span class="av sm" style="--color:#14b8a6">M</span> Mike</div></td>
+              <td style="font-weight:700">$350.00</td>
+              <td style="color:var(--danger);font-size:12px">−$70.00</td>
+              <td style="color:var(--danger);font-size:12px">−$70.00</td>
+              <td style="color:var(--success);font-size:12px">+$280.00</td>
+              <td style="color:var(--danger);font-size:12px">−$70.00</td>
+              <td style="color:var(--danger);font-size:12px">−$70.00</td>
+            </tr>
+            <tr>
+              <td style="color:var(--muted);font-size:12px;white-space:nowrap">Jun 16</td>
+              <td style="font-weight:500">Surf Lesson — Kuta</td>
+              <td><div style="display:flex;align-items:center;gap:6px"><span class="av sm" style="--color:#f59e0b">J</span> Jess</div></td>
+              <td style="font-weight:700">$225.00</td>
+              <td style="color:var(--danger);font-size:12px">−$45.00</td>
+              <td style="color:var(--danger);font-size:12px">−$45.00</td>
+              <td style="color:var(--danger);font-size:12px">−$45.00</td>
+              <td style="color:var(--success);font-size:12px">+$180.00</td>
+              <td style="color:var(--danger);font-size:12px">−$45.00</td>
+            </tr>
+            <tr>
+              <td style="color:var(--muted);font-size:12px;white-space:nowrap">Jun 16</td>
+              <td style="font-weight:500">Café Breakfasts</td>
+              <td><div style="display:flex;align-items:center;gap:6px"><span class="av sm" style="--color:#22c55e">L</span> Leo</div></td>
+              <td style="font-weight:700">$64.50</td>
+              <td style="color:var(--danger);font-size:12px">−$12.90</td>
+              <td style="color:var(--danger);font-size:12px">−$12.90</td>
+              <td style="color:var(--danger);font-size:12px">−$12.90</td>
+              <td style="color:var(--danger);font-size:12px">−$12.90</td>
+              <td style="color:var(--success);font-size:12px">+$51.60</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
