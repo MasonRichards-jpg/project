@@ -1222,3 +1222,140 @@ a { text-decoration: none; color: inherit; }
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
+
+/* ================================================================
+   MOBILE — Bottom navigation bar  (≤ 600px)
+   ================================================================ */
+@media (max-width: 600px) {
+  :root {
+    --sidebar-w: 0px;
+    --topbar-h:  52px;
+  }
+
+  /* ── Bottom nav bar ───────────────────────────────────── */
+  .sidebar {
+    position: fixed !important;
+    bottom: 0; left: 0; top: auto;
+    width: 100vw !important;
+    height: 58px;
+    flex-direction: row;
+    border-right: none;
+    border-top: 1px solid var(--border);
+    overflow: hidden;
+    z-index: 100;
+  }
+
+  .sidebar-brand,
+  .sidebar-bottom { display: none; }
+
+  .sidebar-nav {
+    flex-direction: row;
+    width: 100%;
+    padding: 0;
+    gap: 0;
+  }
+
+  .nav-label { display: none; }
+
+  .nav-item {
+    flex: 1;
+    flex-direction: column !important;
+    gap: 3px;
+    padding: 6px 4px !important;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0;
+    font-size: 10px;
+  }
+
+  /* Re-show text labels as tiny captions */
+  .nav-item > span:not(.ni) {
+    display: block !important;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .02em;
+    line-height: 1;
+  }
+
+  .ni { font-size: 18px; line-height: 1; }
+
+  /* ── Main area ────────────────────────────────────────── */
+  .main   { height: calc(100vh - 58px); }
+
+  .topbar { padding: 0 16px; }
+
+  .page-body {
+    padding: 14px 14px;
+    gap: 14px;
+    padding-bottom: 20px;
+  }
+
+  /* Hide secondary topbar actions that don't fit */
+  .topbar-right .btn-ghost:not(:last-child) { display: none; }
+
+  /* Subtitle line is too long on small screens */
+  .page-sub { display: none; }
+
+  /* ── Stat cards ───────────────────────────────────────── */
+  .stats-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .stat-card-value { font-size: 22px; }
+  .stat-card       { padding: 14px 16px; }
+
+  /* ── Member grid (balances) ───────────────────────────── */
+  .member-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .member-card { padding: 16px 12px; }
+
+  /* ── Contribution breakdown ───────────────────────────── */
+  .contrib-row {
+    grid-template-columns: 28px 1fr 46px;
+    gap: 8px;
+  }
+  .contrib-meta { display: none; }
+
+  /* ── Settle up ────────────────────────────────────────── */
+  .settle-grid { grid-template-columns: 1fr; }
+  .debt-amount { font-size: 20px; }
+
+  /* ── Form rows ────────────────────────────────────────── */
+  .form-row-2,
+  .form-row-3 { grid-template-columns: 1fr !important; }
+
+  /* ── Expenses page ────────────────────────────────────── */
+  .expenses-layout { grid-template-columns: 1fr; }
+
+  /* ── Trip page ────────────────────────────────────────── */
+  .trip-layout  { grid-template-columns: 1fr; }
+  .cover-picker { gap: 8px; }
+  .cover-option { width: 44px; height: 44px; font-size: 20px; }
+
+  /* ── Tables — horizontal scroll ──────────────────────── */
+  .txn-table,
+  .expense-table { font-size: 12px; }
+
+  .txn-table th,
+  .txn-table td,
+  .expense-table th,
+  .expense-table td { padding: 9px 10px; }
+}
+
+/* ================================================================
+   VERY SMALL  (≤ 420px)
+   ================================================================ */
+@media (max-width: 420px) {
+  .stats-row   { grid-template-columns: 1fr; }
+  .member-grid { grid-template-columns: 1fr; }
+
+  .stat-card-value { font-size: 20px; }
+  .debt-amount     { font-size: 18px; }
+
+  .topbar  { padding: 0 12px; }
+  .page-body { padding: 10px; }
+
+  .debt-actions { flex-direction: column; }
+}
